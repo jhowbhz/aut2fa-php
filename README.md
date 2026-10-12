@@ -1,29 +1,71 @@
-# aut2fa-php
+<p align="center">
+  <a href="https://aut2fa.com">
+    <img src="https://raw.githubusercontent.com/jhowbhz/aut2fa-php/main/.github/assets/banner.png" alt="aut2fa para PHP: você envia o código, a gente entrega por WhatsApp, SMS, Telegram e e-mail" width="100%">
+  </a>
+</p>
 
-Use o SDK PHP da aut2fa para enviar, consultar e verificar códigos de autenticação de dois fatores pela API. O cliente usa cURL e mantém os nomes dos campos da resposta em `snake_case`.
+<p align="center">
+  <a href="https://packagist.org/packages/aut2fa/aut2fa-php"><img src="https://img.shields.io/packagist/v/aut2fa/aut2fa-php?color=00cfc5&label=packagist" alt="Versão no Packagist"></a>
+  <a href="https://packagist.org/packages/aut2fa/aut2fa-php"><img src="https://img.shields.io/packagist/dependency-v/aut2fa/aut2fa-php/php?color=777bb4&logo=php&logoColor=white" alt="Versão do PHP"></a>
+  <a href="https://packagist.org/packages/aut2fa/aut2fa-php/stats"><img src="https://img.shields.io/packagist/dt/aut2fa/aut2fa-php?color=00cfc5" alt="Downloads"></a>
+  <a href="https://github.com/jhowbhz/aut2fa-php/actions/workflows/ci.yml"><img src="https://github.com/jhowbhz/aut2fa-php/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/pacotes%20extras-0-00cfc5" alt="Zero pacotes extras">
+  <a href="LICENSE"><img src="https://img.shields.io/packagist/l/aut2fa/aut2fa-php?color=00cfc5" alt="Licença MIT"></a>
+</p>
 
-## Requisitos
+<p align="center">
+  <b>Envie códigos 2FA por WhatsApp, SMS, Telegram e e-mail com uma chamada de API.</b><br>
+  <a href="https://aut2fa.com">Site</a> ·
+  <a href="https://doc.aut2fa.com">Documentação</a> ·
+  <a href="https://packagist.org/packages/aut2fa/aut2fa-php">Packagist</a> ·
+  <a href="https://aut2fa.com">Criar conta grátis</a> ·
+  <a href="https://github.com/jhowbhz/aut2fa-php/issues">Reportar problema</a>
+</p>
 
-Instale PHP 8.1 ou superior com as extensões `curl` e `json`, além do [Composer](https://getcomposer.org/).
+---
 
-## Instalação pelo Git
+## Por que usar
 
-Após a publicação da tag `v0.1.0` no repositório, adicione a origem Git ao projeto consumidor:
+- **Um endpoint, quatro canais.** Você chama `send`, e a aut2fa entrega por WhatsApp, SMS, Telegram ou e-mail.
+- **Sem gerar nem guardar código.** A API pode gerar o código; você só chama `verify` com o que o usuário digitou.
+- **Zero pacotes extras.** Usa só as extensões `curl` e `json` do PHP. Nada de Guzzle no seu `vendor`.
+- **Funciona em qualquer projeto.** Laravel, Symfony, WordPress ou PHP puro: basta o autoloader do Composer.
+- **Seguro por padrão.** Não segue redirects, não repete requisições sozinho e mantém a verificação TLS do cURL.
+- **Erros claros.** `ApiError`, `NetworkError` e `InvalidResponseError` separam cada tipo de falha.
+
+## Instalar
+
+Requer PHP 8.1 ou superior com as extensões `curl` e `json`.
 
 ```sh
-composer config repositories.aut2fa vcs https://github.com/jhowbhz/aut2fa-php
-composer require aut2fa/aut2fa-php:^0.1.0
+composer require aut2fa/aut2fa-php
 ```
 
-O pacote ainda não está cadastrado no Packagist. Quando o cadastro estiver disponível, você poderá instalar sem configurar a origem Git:
+## Começar em 30 segundos
 
-```sh
-composer require aut2fa/aut2fa-php:^0.1.0
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Aut2fa\Aut2fa;
+
+$aut2fa = new Aut2fa(getenv('AUT2FA_API_KEY'));
+
+// 1. Envia o código para o usuário
+$send = $aut2fa->send(['to' => '+5531999999999']);
+
+// 2. Confere o código que o usuário digitou
+$result = $aut2fa->verify($send->id, ['code' => '482913']);
+
+if ($result->valid) {
+    echo 'Login liberado';
+}
 ```
 
-O Composer determina a versão pelas tags Git. O `composer.json` da biblioteca não fixa uma versão.
+Crie sua conta em [aut2fa.com](https://aut2fa.com) para pegar a chave da aplicação.
 
-## Enviar e verificar um código
+## Enviar e verificar em detalhe
 
 Configure `AUT2FA_API_KEY` no servidor e carregue o autoloader do Composer:
 
@@ -115,12 +157,27 @@ composer test
 
 Os testes usam um servidor HTTP local real e não chamam a API aut2fa. Eles precisam de `proc_open` e acesso ao loopback. A integração contínua executa as checagens em PHP 8.1 a 8.5 no Linux e PHP 8.5 no Windows.
 
-Para gerar o arquivo de distribuição, execute:
+## Publicar novas versões
 
-```sh
-composer archive --format=zip --dir=dist --file=aut2fa-php-0.1.0
-```
+O pacote está no [Packagist](https://packagist.org/packages/aut2fa/aut2fa-php) e é atualizado automaticamente. Para lançar uma versão, crie e envie uma tag semântica, como `v0.1.1`; o Composer lê a versão pela tag.
 
-O arquivo exclui testes, dependências e arquivos da integração contínua. A publicação no Packagist depende do cadastro do repositório e de uma tag Git; os workflows executam somente checagens.
+## Outras linguagens
 
-Consulte a [documentação da API aut2fa](https://doc.aut2fa.com) e o [histórico de alterações](CHANGELOG.md). Licença [MIT](LICENSE).
+| Linguagem | Pacote | Repositório |
+| --- | --- | --- |
+| PHP | [`aut2fa/aut2fa-php`](https://packagist.org/packages/aut2fa/aut2fa-php) | [aut2fa-php](https://github.com/jhowbhz/aut2fa-php) |
+| Node.js | [`@aut2fa/node`](https://www.npmjs.com/package/@aut2fa/node) | [aut2fa-node](https://github.com/jhowbhz/aut2fa-node) |
+| Python | [`aut2fa`](https://pypi.org/project/aut2fa/) | [aut2fa-python](https://github.com/jhowbhz/aut2fa-python) |
+| Go | [`github.com/jhowbhz/aut2fa-go`](https://pkg.go.dev/github.com/jhowbhz/aut2fa-go) | [aut2fa-go](https://github.com/jhowbhz/aut2fa-go) |
+
+## Contribuir
+
+Encontrou um bug ou tem uma ideia? Abra uma [issue](https://github.com/jhowbhz/aut2fa-php/issues) ou envie um pull request. Consulte o [histórico de alterações](CHANGELOG.md) para acompanhar as versões.
+
+Se este SDK te ajudou, deixe uma ⭐ no repositório. Isso ajuda outros devs a encontrá-lo.
+
+---
+
+<p align="center">
+  <a href="https://doc.aut2fa.com">Documentação da API</a> · Licença <a href="LICENSE">MIT</a> · Feito pela <a href="https://aut2fa.com">aut2fa</a>
+</p>
