@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.planning/
+.omc/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+vendor/
+composer.lock
+.phpunit.cache/
+.phpunit.result.cache
+coverage/
